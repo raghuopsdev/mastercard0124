@@ -1,0 +1,9 @@
+---
+- hosts: webserver
+  become: yes
+  tasks:
+    - shell: /usr/bin/whoami
+      register: username
+
+      # - debug: msg="{{ username.stdout }}"
+    - file: path=/tmp/welcome.txt owner={{ username.stdout }}
