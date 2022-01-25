@@ -19,9 +19,14 @@
       - name: ensure tomcat-web installed
         yum: name=tomcat-webapps state=present
         when: ansible_os_family == "RedHat"  
-      
-      - name: ensure apache running
-        service: name=httpd enabled=yes state=started
+      - name: deploy proxy
+        template: src=proxy.conf dest=/etc/httpd/conf.d/proxy.conf
+        notify:
+          - Restart apache
         
       - name: ensure tomcat running
         service: name=tomcat enabled=yes state=started
+
+  handlers:
+      - name: Restart apache
+        service: name=httpd enabled=yes state=restarted
