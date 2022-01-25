@@ -1,0 +1,27 @@
+---
+- hosts: webserver
+  become: yes
+  vars:
+      http_port: 80
+      doc_dir: /ansible/
+      doc_root: /var/www/html/ansible/
+      max_clients: 5
+      ansible_python_interpreter: python
+  tasks:
+      - name: ensure httpd installed
+        yum: name=httpd state=present
+        when: ansible_os_family == "RedHat"
+    
+      - name: ensure tomcat installed
+        yum: name=tomcat state=present
+        when: ansible_os_family == "RedHat"  
+      
+      - name: ensure tomcat-web installed
+        yum: name=tomcat-webapps state=present
+        when: ansible_os_family == "RedHat"  
+      
+      - name: ensure apache running
+        service: name=httpd enabled=yes state=started
+        
+      - name: ensure tomcat running
+        service: name=tomcat enabled=yes state=started
