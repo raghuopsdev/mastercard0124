@@ -2,7 +2,7 @@
 - hosts: webserver
   become: yes
   vars:
-    favorite_snacks
+    favorite_snacks:
     - hotdog
     - icecream
     - chips
