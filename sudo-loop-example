@@ -1,0 +1,88 @@
+========================
+
+- name: Add multiple users
+  user:
+    name: "{{ item }}"
+    state: present
+    groups: "wheel"
+with_items:
+    - VM1
+     - VM2
+ ============================
+ 
+ - name: add user VM1
+  user:
+    name: "VM1"
+    state: present
+    groups: "wheel"
+- name: add user VM2
+  user:
+    name: "VM2"
+    state: present
+    groups: "wheel"
+ =================================================
+ - name: Provides users with access to databases
+mysql_user:
+    name: "{{ item[0] }}"
+priv: "{{ item[1] }}.*:ALL"
+append_privs: yes
+    password: "foo"
+with_nested:
+   - [ ' LinuxUser1', 'LinuxUser2' ]
+    - [ 'client', 'employee', 'provider' ]
+ ====================================================
+ - name: Provides users with access to databases
+community.mysql.mysql_user:
+    name: "{{ item[0] }}"
+priv: "{{ item[1] }}.*:ALL"
+append_privs: yes
+    password: "foo"
+  loop: "{{ [ ' LinuxUser1', 'LinuxUser2' ] | product([ 'client', 'employee', 'provider' ]) | list }}"
+ ============================================
+ ================================================================================================================
+ 
+ PARALLEL DATA SETS
+ 
+ 
+ alphabets: [ 'a', 'b', 'c', 'd' ]
+ num: [ 2, 4, 6, 8 ]
+ 
+ 
+ tasks:
+- debug:
+        msg: "{{ item.0 }} and {{ item.1 }}"
+  with_together:
+       - "{{ alphabets }}"
+       - "{{ num }}" 
+ 
+ OUTPUT
+ ==========
+ (a,2) (b,4) etc..
+ 
+ ======================================================================================================
+ 
+ RANDOM CHOICE LOOPS
+ 
+ - debug:
+    msg: "{{ item }}"
+   with_random_choice:
+     - "Execute action 1"
+     - "Execute action 2"
+     - "Execute action 3"
+     - "Execute action 4"
+ ==================================================================================================
+ 
+ Until - Loop Example
+ 
+ shell: /usr/bin/foo
+ register: result
+ until: result.stdout.find("all systems ready") != -1
+ retries: 10
+ delay: 7
+     
+     
+ 
+ 
+ 
+ 
+ 
